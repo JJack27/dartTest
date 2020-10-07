@@ -292,13 +292,6 @@ class LocationTimeEncoder{
 
 
 
-
-
-
-
-
-
-
 void main(){
   Function eq = const ListEquality().equals;
 
