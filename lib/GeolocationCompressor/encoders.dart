@@ -274,12 +274,30 @@ class _DatetimeEncoder extends _BaseEncoder{
 
 /// Class that encodes all information relate with geolocation & time information
 class LocationTimeEncoder{
-  final _LongitudeEncoder _longitudeEncoder = new _LongitudeEncoder();
-  final _LatitudeEncoder _latitudeEncoder = new _LatitudeEncoder();
-  final _DatetimeEncoder _datetimeEncoder = new _DatetimeEncoder();
+  _LongitudeEncoder _longitudeEncoder;
+  _LatitudeEncoder _latitudeEncoder;
+  _DatetimeEncoder _datetimeEncoder;
+  LocationTimeEncoder({lngDeg:7, latDeg:7, exactYear:true, date:true}){
+    _longitudeEncoder = new _LongitudeEncoder(deg:lngDeg);
+    _latitudeEncoder = new _LatitudeEncoder(deg:latDeg);
+    _datetimeEncoder = new _DatetimeEncoder(exactYear: exactYear, date: date);
+  }
+
+  List<int> encode(String dateTime, double lng, double lat){
+    return [..._datetimeEncoder.encode(dateTime), ..._longitudeEncoder.encode(lng), ..._latitudeEncoder.encode(lat)];
+  }
 
 
 }
+
+
+
+
+
+
+
+
+
 
 void main(){
   Function eq = const ListEquality().equals;
@@ -419,5 +437,12 @@ void main(){
   }catch(e){throw Exception("2020-09-23 24:-1:30.504677, caught unexpected exception.");}
   print('DateTime encoding passed!');
 
-
+  LocationTimeEncoder locationTimeEncoder = new LocationTimeEncoder();
+  List<int> encoded = locationTimeEncoder.encode('2020-09-23 14:39:30.504677', 89, 45);
+  List<int> LocationTimeResult = [0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1,
+    0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0,
+    0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1
+  ];
+  assert(eq(encoded, LocationTimeResult), "Wrong");
+  print("LocationTimeEncoder passed!");
 }
