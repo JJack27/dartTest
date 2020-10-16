@@ -79,7 +79,7 @@ packages:
     source: hosted
     version: "1.0.1"
   collection:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: collection
       url: "https://pub.dartlang.org"
@@ -180,7 +180,7 @@ packages:
     source: hosted
     version: "0.14.0+4"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       url: "https://pub.dartlang.org"
