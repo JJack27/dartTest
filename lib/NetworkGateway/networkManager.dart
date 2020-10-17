@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 /// Network manager responsible for fetching data from the internet as well as
 /// sending HTTP requests.
@@ -40,6 +42,7 @@ class NetworkManager{
         FormatException("Your input is invalid");
       }
       this._ipToConnect = '192.168.'+ int.parse(ipAddr.substring(0, 3)).toString() + "." + int.parse(ipAddr.substring(3, 6)).toString();
+      //_ipToConnect += ":8000";
     }else{
       // connect to server in cloud
       this._ipToConnect = ipAddr;
@@ -131,8 +134,19 @@ class NetworkManager{
     }
   }
 
+  Future<bool> ping() async{
+    try {
+      var respone = await this.get('');
+      return respone.statusCode == 200;
+    }on SocketException{
+      return false;
+    }
 
+  }
 }
+
+
+NetworkManager networkManager;
 
 Future<void> main() async{
   String userId;
