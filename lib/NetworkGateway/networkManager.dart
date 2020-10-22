@@ -1,11 +1,12 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
 /// Network manager responsible for fetching data from the internet as well as
 /// sending HTTP requests.
 /// @author: Yizhou Zhao
 /// @date: 2020-10-16 13:19
 /// @lastUpdate: 2020-10-16 13:19
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+
 
 //import 'package:flutter_app_file/fileManager.dart';
 import 'package:http/http.dart' as http;
