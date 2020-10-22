@@ -202,6 +202,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                         errorController.add(ErrorAnimationType.shake); // Triggering error shake animation
                         setState(() {
                           hasError = true;
+                          Navigator.of(context).push(_createRoute());
                         });
                       } else {
                         setState(() {

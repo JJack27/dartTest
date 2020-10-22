@@ -28,7 +28,6 @@ class FileManager {
   FileManager(String fileName, {bool onCache: false}) {
     this.fileName = fileName;
     this.onCache = onCache;
-    createFile();
   }
 
   Future<File> getFile() async{
@@ -54,29 +53,44 @@ class FileManager {
   }
 
   /// Clear the content of the file
-  Future<File> flush(){
+  Future<File> flush() async{
+    if(this.file == null){
+      await this.createFile();
+    }
     return this.file.writeAsString("", mode: FileMode.write);
   }
 
   /// Test method for writing the position information
-  Future<File> writePosition(double longitude, double latitude){
+  Future<File> writePosition(double longitude, double latitude) async{
+    if(this.file == null){
+      await this.createFile();
+    }
     var now = DateTime.now();
     return this.file.writeAsString('$longitude, $latitude, $now\n', mode: FileMode.append);
   }
 
   /// append the given string to the end of the file
-  Future<File> writeLine(String str){
+  Future<File> writeLine(String str) async{
+    if(this.file == null){
+      await this.createFile();
+    }
     return this.file.writeAsString("$str\n", mode:FileMode.append);
   }
 
   /// Method to write to the file
   Future<File> write(int Tem, int ACX, int ACZ,  int BAT, int RED, int IR) async{
+    if(this.file == null){
+      await this.createFile();
+    }
     // write the file
     return this.file.writeAsString('$Tem, $ACX, $ACZ, $BAT, $RED, $IR\n', mode: FileMode.append);
   }
 
   /// Read all content of the given file
   Future<String> readAll() async{
+    if(this.file == null){
+      await this.createFile();
+    }
     return this.file.readAsString();
   }
 

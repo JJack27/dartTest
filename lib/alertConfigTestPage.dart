@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_file/AlertConfiguration/alertConfigurationManager.dart';
+import 'package:flutter_app_file/AlertConfiguration/alertConfigurationManager.dart' show alertConfigManager;
 import 'package:flutter_app_file/AlertConfiguration/alertConfiguration.dart';
-import 'dart:convert';
+
 
 class AlertConfigPage extends StatefulWidget{
   AlertConfigPage({Key key}): super(key:key);
@@ -14,17 +14,17 @@ class AlertConfigPage extends StatefulWidget{
 class _AlertConfigPage extends State<AlertConfigPage> {
   int _version;
   List<AlertConfiguration> _configs;
-  AlertConfigurationManager _manager = new AlertConfigurationManager();
 
   @override
   void initState() {
     // TODO: implement initState
 
     super.initState();
-    _manager.init().then((bool success){
+    // Init the global instance alertConfigManager
+    alertConfigManager.init().then((bool val){
       setState(() {
-        _version = _manager.version;
-        _configs = _manager.configs;
+        _version = alertConfigManager.version;
+        _configs = alertConfigManager.configs;
       });
     });
   }
