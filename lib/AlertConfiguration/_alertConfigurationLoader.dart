@@ -21,20 +21,20 @@ class AlertConfigurationLoader{
   /// Read the configuration on the local file
   Future<List<AlertConfiguration>> loadLocalConfig() async{
     return _fileManager.readAll().then((String content){
-      List<AlertConfiguration> configs;
+      List<AlertConfiguration> configs = [];
 
       // read the content of the local config file
-      List<Map<String, dynamic>> configsMap = json.decode(content);
+      List<dynamic> configsMap = json.decode(content);
 
       // parse configurations
       for(var map in configsMap){
         AlertConfiguration config = new AlertConfiguration(
             map['name'],
-            int.parse(map['compare']),
-            double.parse(map['range_min']),
-            double.parse(map['range_max']),
-            int.parse(map['duration']),
-            int.parse(map['version'])
+            map['compare'],
+            map['range_min'],
+            map['range_max'],
+            map['duration'],
+            map['version']
         );
 
         configs.add(config);
@@ -64,22 +64,16 @@ class AlertConfigurationLoader{
   /// throws:
   ///   - TimeoutException
   Future<bool> updateConfig() async{
-    String currentConfig;
+
     try{
       String latestConfig = await _loadLatestConfig();
-
-      _fileManager.readAll().then((String config){
-        currentConfig = config;
-      });
-
+      Map<String, dynamic> map = json.decode(latestConfig);
       // clear current config content
       _fileManager.flush();
       // write to the file
-      _fileManager.writeLine(latestConfig);
+      _fileManager.writeLine(json.encode(map['config']));
       return true;
     }catch (e) {
-      _fileManager.flush();
-      _fileManager.writeLine(currentConfig);
       return false;
     }
   }

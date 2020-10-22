@@ -41,4 +41,16 @@ class AlertConfiguration{
     return _version;
   }
 
+  @override
+  String toString(){
+    String result = "";
+    result += "{name: $_name}";
+    result += "{compare: $_compare}";
+    result += "{rangeMax: $_rangeMax}";
+    result += "{rangeMin: $_rangeMin}";
+    result += "{duration: $_duration}";
+    result += "{version: $_version}";
+    return result;
+  }
+
 }

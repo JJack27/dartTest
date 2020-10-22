@@ -43,7 +43,7 @@ class NetworkManager{
         FormatException("Your input is invalid");
       }
       this._ipToConnect = '192.168.'+ int.parse(ipAddr.substring(0, 3)).toString() + "." + int.parse(ipAddr.substring(3, 6)).toString();
-      //_ipToConnect += ":8000";
+      _ipToConnect += ":8000";
     }else{
       // connect to server in cloud
       this._ipToConnect = ipAddr;

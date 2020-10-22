@@ -28,6 +28,7 @@ class FileManager {
   FileManager(String fileName, {bool onCache: false}) {
     this.fileName = fileName;
     this.onCache = onCache;
+    createFile();
   }
 
   Future<File> getFile() async{
