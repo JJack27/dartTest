@@ -48,6 +48,7 @@ class FileManager {
     }
 
     this.file = File('$path/$fileName');
+    await this.flush();
     print("The file is stored at $path/$fileName");
     return this.file;
   }
@@ -89,6 +90,7 @@ class FileManager {
   /// Read all content of the given file
   Future<String> readAll() async{
     if(this.file == null){
+      print("Creating file");
       await this.createFile();
     }
     return this.file.readAsString();

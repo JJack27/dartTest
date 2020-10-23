@@ -12,6 +12,89 @@ import 'dart:convert';
 class AlertConfigurationLoader{
   String _fileName = "config.json";
   FileManager _fileManager;
+  String _defualtConfig = '''[
+    {
+    "id": 10,
+    "name": "HR",
+    "compare": 0,
+    "range_min": 200.0,
+    "range_max": 0.0,
+    "duration": 15,
+    "version": 1
+    },
+    {
+      "id": 11,
+      "name": "HR",
+      "compare": 1,
+      "range_min": 0.0,
+      "range_max": 40.0,
+      "duration": 15,
+      "version": 1
+    },
+    {
+      "id": 12,
+      "name": "HR",
+      "compare": 2,
+      "range_min": 147.0,
+      "range_max": 153.0,
+      "duration": 300,
+      "version": 1
+    },
+    {
+      "id": 13,
+      "name": "HR",
+      "compare": 1,
+      "range_min": 0.0,
+      "range_max": 1.0,
+      "duration": 5,
+      "version": 1
+    },
+    {
+      "id": 14,
+      "name": "TEM",
+      "compare": 0,
+      "range_min": 38.0,
+      "range_max": 0.0,
+      "duration": 300,
+      "version": 1
+    },
+    {
+      "id": 15,
+      "name": "TEM",
+      "compare": 1,
+      "range_min": 0.0,
+      "range_max": 35.0,
+      "duration": 300,
+      "version": 1
+    },
+    {
+      "id": 16,
+      "name": "O2S",
+      "compare": 1,
+      "range_min": 0.0,
+      "range_max": 0.99,
+      "duration": 60,
+      "version": 1
+    },
+    {
+      "id": 17,
+      "name": "RR",
+      "compare": 0,
+      "range_min": 25.0,
+      "range_max": 0.0,
+      "duration": 120,
+      "version": 1
+    },
+    {
+      "id": 18,
+      "name": "RR",
+      "compare": 0,
+      "range_min": 30.0,
+      "range_max": 0.0,
+      "duration": 60,
+      "version": 1
+    }
+  ]''';
 
   /// Constructor
   AlertConfigurationLoader(){
@@ -22,6 +105,10 @@ class AlertConfigurationLoader{
   Future<List<AlertConfiguration>> loadLocalConfig() async{
     return _fileManager.readAll().then((String content){
       List<AlertConfiguration> configs = [];
+
+      if(content.length == 0){
+        content = _defualtConfig;
+      }
 
       // read the content of the local config file
       List<dynamic> configsMap = json.decode(content);
