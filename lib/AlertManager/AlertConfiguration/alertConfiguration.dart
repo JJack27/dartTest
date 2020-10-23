@@ -42,6 +42,10 @@ class AlertConfiguration{
     return _version;
   }
 
+  int get id{
+    return _id;
+  }
+
   @override
   String toString(){
     String result = "";

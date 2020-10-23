@@ -58,4 +58,4 @@ class AlertConfigurationManager{
 }
 
 /// Global instance
-AlertConfigurationManager alertConfigManager = new AlertConfigurationManager();
+/// AlertConfigurationManager alertConfigManager = new AlertConfigurationManager();

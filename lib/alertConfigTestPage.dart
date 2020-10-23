@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_file/AlertManager/AlertConfiguration/alertConfiguration.dart';
-import 'package:flutter_app_file/AlertManager/AlertConfiguration/alertConfigurationManager.dart' show alertConfigManager;
+import 'package:flutter_app_file/AlertManager/AlertConfiguration/alertConfigurationManager.dart';
 
 
 class AlertConfigPage extends StatefulWidget{
@@ -14,6 +14,7 @@ class AlertConfigPage extends StatefulWidget{
 class _AlertConfigPage extends State<AlertConfigPage> {
   int _version;
   List<AlertConfiguration> _configs;
+  AlertConfigurationManager alertConfigManager = new AlertConfigurationManager();
 
   @override
   void initState() {
