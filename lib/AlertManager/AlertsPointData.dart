@@ -32,10 +32,12 @@ class AlertPointData{
       this._rangeMax, this._duration,  {bool smooth: true}){
     _counter = 0;
     _smooth = smooth;
+    print(_smooth);
+    _queue = [];
 
     // update _queueLength if applying smooth
     if(_smooth){
-      _maxQueueLen = log(_duration) ~/ log(3);
+      _maxQueueLen = log(_duration) ~/ 0.4;
       _maxQueueLen = _maxQueueLen < 1 ? 1 : _maxQueueLen;
     }
   }
@@ -96,7 +98,6 @@ class AlertPointData{
       }
       break;
     }
-
     // reset time counter if not in warning condition
     if(!warningCondition){
       _counter = 0;
@@ -118,5 +119,17 @@ class AlertPointData{
   int get configId{
     return _configId;
   }
+
+}
+
+void main(){
+  AlertPointData alert = new AlertPointData("TEM", 1, 1, 0, 25, 5);
+
+  List<double> data = [40, 41, 45, 24, 15, 10, 5, 5, 20, 45, 15, 0, 10];
+
+  for (var i in data){
+    print(alert.inDanger(i));
+  }
+
 
 }
