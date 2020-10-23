@@ -87,6 +87,7 @@ class FileManager {
     return this.file.writeAsString('$Tem, $ACX, $ACZ, $BAT, $RED, $IR\n', mode: FileMode.append);
   }
 
+
   /// Read all content of the given file
   Future<String> readAll() async{
     if(this.file == null){

@@ -1,5 +1,5 @@
-import 'alertConfiguration.dart';
-import 'package:flutter_app_file/AlertConfiguration/_alertConfigurationLoader.dart';
+import 'package:flutter_app_file/AlertManager/AlertConfiguration/alertConfiguration.dart';
+import 'package:flutter_app_file/AlertManager/AlertConfiguration/_alertConfigurationLoader.dart';
 
 class AlertConfigurationManager{
   /// attributes

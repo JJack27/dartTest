@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_file/AlertConfiguration/alertConfigurationManager.dart' show alertConfigManager;
-import 'package:flutter_app_file/AlertConfiguration/alertConfiguration.dart';
+import 'package:flutter_app_file/AlertManager/AlertConfiguration/alertConfiguration.dart';
+import 'package:flutter_app_file/AlertManager/AlertConfiguration/alertConfigurationManager.dart' show alertConfigManager;
 
 
 class AlertConfigPage extends StatefulWidget{

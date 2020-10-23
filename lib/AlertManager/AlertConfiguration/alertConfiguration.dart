@@ -1,7 +1,7 @@
 /// Class represents a configuration of alerts
 /// @author: Yizhou Zhao
 /// @date: 2020-10-22 14:26
-/// @lastUpdate: 2020-10-22 14:26
+/// @lastUpdate: 2020-10-23 13:50
 
 class AlertConfiguration{
   /// Attributes
@@ -11,9 +11,10 @@ class AlertConfiguration{
   double _rangeMax;
   int _duration;
   int _version;
+  int _id;
 
   /// Constructor
-  AlertConfiguration(this._name, this._compare, this._rangeMin, this._rangeMax,
+  AlertConfiguration(this._id, this._name, this._compare, this._rangeMin, this._rangeMax,
       this._duration, this._version);
 
   /// Getters
@@ -44,6 +45,7 @@ class AlertConfiguration{
   @override
   String toString(){
     String result = "";
+    result += "{id: $_id}";
     result += "{name: $_name}";
     result += "{compare: $_compare}";
     result += "{rangeMax: $_rangeMax}";

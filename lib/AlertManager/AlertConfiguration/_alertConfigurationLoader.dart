@@ -1,20 +1,20 @@
 /// Class for updating, saving, and reading alert configurations
 /// @author: Yizhou Zhao
 /// @date: 2020-10-22 13:21
-/// @lastUpdate: 2020-10-22 13:21
+/// @lastUpdate: 2020-10-23 13:50
 
 import 'package:flutter_app_file/NetworkGateway/networkManager.dart' show networkManager;
 import 'package:flutter_app_file/fileManager.dart';
-import 'package:flutter_app_file/AlertConfiguration/alertConfiguration.dart';
+import 'package:flutter_app_file/AlertManager/AlertConfiguration/alertConfiguration.dart';
 import 'dart:async';
 import 'dart:convert';
 
 class AlertConfigurationLoader{
   String _fileName = "config.json";
   FileManager _fileManager;
-  String _defualtConfig = '''[
+  String _defaultConfig = '''[
     {
-    "id": 10,
+    "id": 0,
     "name": "HR",
     "compare": 0,
     "range_min": 200.0,
@@ -23,7 +23,7 @@ class AlertConfigurationLoader{
     "version": 1
     },
     {
-      "id": 11,
+      "id": 1,
       "name": "HR",
       "compare": 1,
       "range_min": 0.0,
@@ -32,7 +32,7 @@ class AlertConfigurationLoader{
       "version": 1
     },
     {
-      "id": 12,
+      "id": 2,
       "name": "HR",
       "compare": 2,
       "range_min": 147.0,
@@ -41,16 +41,16 @@ class AlertConfigurationLoader{
       "version": 1
     },
     {
-      "id": 13,
+      "id": 3,
       "name": "HR",
       "compare": 1,
       "range_min": 0.0,
-      "range_max": 1.0,
+      "range_max": 10.0,
       "duration": 5,
       "version": 1
     },
     {
-      "id": 14,
+      "id": 4,
       "name": "TEM",
       "compare": 0,
       "range_min": 38.0,
@@ -59,7 +59,7 @@ class AlertConfigurationLoader{
       "version": 1
     },
     {
-      "id": 15,
+      "id": 5,
       "name": "TEM",
       "compare": 1,
       "range_min": 0.0,
@@ -68,7 +68,7 @@ class AlertConfigurationLoader{
       "version": 1
     },
     {
-      "id": 16,
+      "id": 6,
       "name": "O2S",
       "compare": 1,
       "range_min": 0.0,
@@ -77,7 +77,7 @@ class AlertConfigurationLoader{
       "version": 1
     },
     {
-      "id": 17,
+      "id": 7,
       "name": "RR",
       "compare": 0,
       "range_min": 25.0,
@@ -86,7 +86,7 @@ class AlertConfigurationLoader{
       "version": 1
     },
     {
-      "id": 18,
+      "id": 8,
       "name": "RR",
       "compare": 0,
       "range_min": 30.0,
@@ -107,7 +107,7 @@ class AlertConfigurationLoader{
       List<AlertConfiguration> configs = [];
 
       if(content.length == 0){
-        content = _defualtConfig;
+        content = _defaultConfig;
       }
 
       // read the content of the local config file
@@ -116,6 +116,7 @@ class AlertConfigurationLoader{
       // parse configurations
       for(var map in configsMap){
         AlertConfiguration config = new AlertConfiguration(
+            map['id'],
             map['name'],
             map['compare'],
             map['range_min'],
@@ -136,7 +137,7 @@ class AlertConfigurationLoader{
   /// throws:
   ///   - Exception: when status code is not 200
   ///   - TimeoutException: when the server is unable to connect
-  Future<String> _loadLatestConfig() async{
+  Future<String> _getLatestConfig() async{
     var response = await networkManager.get('/api/latestconfig/');
     if(response.statusCode != 200){
       throw Exception("Service is current unavailable. Using local config.");
@@ -153,7 +154,7 @@ class AlertConfigurationLoader{
   Future<bool> updateConfig() async{
 
     try{
-      String latestConfig = await _loadLatestConfig();
+      String latestConfig = await _getLatestConfig();
       Map<String, dynamic> map = json.decode(latestConfig);
       // clear current config content
       _fileManager.flush();
