@@ -6,7 +6,7 @@
 /// ==============================
 /// @author: Yizhou Zhao
 /// @date: 2020-10-23 13:54
-/// @lastUpdate: 2020-10-23 13:54
+/// @lastUpdate: 2020-10-23 16:27
 
 import 'package:flutter_app_file/AlertManager/AlertConfiguration/alertConfigurationManager.dart';
 import 'package:flutter_app_file/AlertManager/AlertPointData.dart';
