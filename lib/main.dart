@@ -7,7 +7,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:flutter_app_file/NetworkGateway/networkManager.dart' show networkManager, NetworkManager;
 import 'dataUploadExample.dart';
 import 'alertConfigTestPage.dart';
-
+import 'alertManagerTestPage.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -253,7 +253,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
 
 Route _createRoute() {
   return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => AlertConfigPage(),
+    pageBuilder: (context, animation, secondaryAnimation) => AlertManagerPage(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = Offset(1.0, 0.0);
       var end = Offset.zero;
