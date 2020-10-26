@@ -253,7 +253,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
 
 Route _createRoute() {
   return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => AlertManagerPage(),
+    pageBuilder: (context, animation, secondaryAnimation) => DataPage(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = Offset(1.0, 0.0);
       var end = Offset.zero;
