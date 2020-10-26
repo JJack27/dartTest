@@ -137,8 +137,8 @@ class NetworkManager{
 
   Future<bool> ping() async{
     try {
-      var respone = await this.get('');
-      return respone.statusCode == 200;
+      var response = await this.get('');
+      return response.statusCode == 200;
     }on SocketException{
       return false;
     }
