@@ -2,17 +2,18 @@
 /// sending HTTP requests.
 /// @author: Yizhou Zhao
 /// @date: 2020-10-16 13:19
-/// @lastUpdate: 2020-10-16 13:19
+/// @lastUpdate: 2020-10-26 12:01
+
+// Importing in-package components
+import 'package:flutter_app_file/NetworkGateway/httpClient.dart';
+import 'package:flutter_app_file/NetworkGateway/networkBuffer.dart';
+
 import 'dart:io';
-
-import 'package:flutter/material.dart';
-
-
-//import 'package:flutter_app_file/fileManager.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
-import 'dart:ui';
+
+
 class NetworkManager{
   // attributes
   String _ipToConnect;
@@ -73,7 +74,7 @@ class NetworkManager{
   /// Abstract the http.Client.post() method
   /// Arguments:
   ///   - apiUri: String. Started and ended with '/'
-  ///   - body: Dynamic. Can be String in JSON format, or Map<String, String>.
+  ///   - body: Dynamic. Can be String in JSON format, or Map<String, dynamic>.
   ///           Note that Map<String, dynamic> will be converted to JSON format.
   /// Return:
   ///   - Future<http.Response>
