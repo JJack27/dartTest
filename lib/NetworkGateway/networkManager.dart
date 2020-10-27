@@ -1,10 +1,8 @@
-import 'dart:async';
-
 /// Network manager responsible for fetching data from the internet as well as
 /// sending HTTP requests.
 /// @author: Yizhou Zhao
 /// @date: 2020-10-16 13:19
-/// @lastUpdate: 2020-10-26 12:01
+/// @lastUpdate: 2020-10-26 20:15
 
 // Importing in-package components
 import 'package:flutter_app_file/NetworkGateway/httpClient.dart';
