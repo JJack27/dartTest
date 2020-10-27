@@ -235,7 +235,7 @@ class _DataPageState extends State<DataPage>{
                     "bracelet": _braceletId,
                   };
 
-                  var response = await networkManager.post('/api/data/$_userId/', dataInfo);
+                  var response = await networkManager.request('POST','/api/data/$_userId/', body:dataInfo);
                   if(response.statusCode == 200){
                     dataPageKey.currentState.showSnackBar(SnackBar(
                       content: Text("Data Uploaded"),

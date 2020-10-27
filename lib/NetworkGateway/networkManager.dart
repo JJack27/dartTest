@@ -2,193 +2,137 @@
 /// sending HTTP requests.
 /// @author: Yizhou Zhao
 /// @date: 2020-10-16 13:19
-/// @lastUpdate: 2020-10-16 13:19
-import 'dart:io';
+/// @lastUpdate: 2020-10-26 20:15
 
-import 'package:flutter/material.dart';
+// Importing in-package components
+import 'package:flutter_app_file/NetworkGateway/httpClient.dart';
+import 'package:flutter_app_file/NetworkGateway/networkBuffer.dart';
 
-
-//import 'package:flutter_app_file/fileManager.dart';
 import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
-import 'dart:ui';
+
+class HttpResponse extends http.Response{
+  HttpResponse(String body, int statusCode) : super(body, statusCode);
+
+}
+
+
 class NetworkManager{
-  // attributes
-  String _ipToConnect;
-  String _apiLogout;
-  Map<String, String> _headers = {'content-type':'application/json'};
-  bool _nursingHome;
-  var _client = http.Client();
-  Map<String, dynamic> _formatValidator = {"Validate": "Purpose"};
+  /// attributes
+  HttpClient _client;
+  NetworkBuffer _buffer;
 
-  /// Constructor
+  /// constructor
+  NetworkManager(String ipAddr, {bool nursingHome: true, String apiLogout:'/api/logout/'}){
+    // initialize httpClient
+    _client = new HttpClient(ipAddr, nursingHome: nursingHome, apiLogout:apiLogout);
+    _buffer = new NetworkBuffer(capacity: 5);
+  }
+
+
+  /// ====== Methods ======
+  /// Abstract the HttpClient.post() method
   /// Arguments:
-  ///   - ipAddr: String, full ip address if nursingHome is false, or only the
-  ///             last two groups of ip address if nursingHome is true
-  ///   - nursingHome: bool, optional. Tell NetworkManager if it's connecting to
-  ///             nursing home or not
-  NetworkManager(String ipAddr, {bool nursingHome: true, String apiLogout}){
-    _nursingHome = nursingHome;
-    _apiLogout = apiLogout;
-
-    // If the user is connecting to nursing home's raspberry pi
-    if(_nursingHome){
-      // Validate the first group of ip address
-      if(int.parse(ipAddr.substring(0, 3)) < 0 || int.parse(ipAddr.substring(0, 3)) > 255) {
-        FormatException("Your input is invalid");
-      }
-      // validate the second group of ip address
-      if(int.parse(ipAddr.substring(3, 6)) < 0 || int.parse(ipAddr.substring(3, 6)) > 255){
-        FormatException("Your input is invalid");
-      }
-      this._ipToConnect = '192.168.'+ int.parse(ipAddr.substring(0, 3)).toString() + "." + int.parse(ipAddr.substring(3, 6)).toString();
-      _ipToConnect += ":8000";
-    }else{
-      // connect to server in cloud
-      this._ipToConnect = ipAddr;
-    }
+  ///   - apiUri: String. Started and ended with '/'
+  ///   - body: Dynamic. Can be String in JSON format, or Map<String, dynamic>.
+  ///           Note that Map<String, dynamic> will be converted to JSON format.
+  /// Return:
+  ///   - Future<http.Response>
+  Future<http.Response> post(String apiUri, dynamic body) async{
+    print("This method is deprecated:\n\tPlease use NetworkManager.request() instead.");
+    return _client.post(apiUri, body);
   }
 
 
-  void initClient(){
-    this._client = new http.Client();
-  }
-
-  void closeClient(){
-    this._client.close();
-  }
-
-  /// Abstract the http.Client.get() method
+  /// Abstract the HttpClient.get() method
   /// Arguments:
   ///   - apiUri: String. Started and ended with '/'
   /// Return:
   ///   - Future<http.Response>
   Future<http.Response> get(String apiUri) async {
-    var uriResponse = await _client.get('http://'+_ipToConnect+apiUri, headers: _headers);
-    return uriResponse;
+    print("This method is deprecated:\n\tPlease use NetworkManager.request() instead.");
+    return _client.get(apiUri);
   }
 
-
-  /// Abstract the http.Client.post() method
+  /// Abstract the HttpClient.ping() method
   /// Arguments:
-  ///   - apiUri: String. Started and ended with '/'
-  ///   - body: Dynamic. Can be String in JSON format, or Map<String, String>.
-  ///           Note that Map<String, dynamic> will be converted to JSON format.
+  ///   - void
   /// Return:
-  ///   - Future<http.Response>
-  Future<http.Response> post(String apiUri, dynamic body) async{
-    String payload;
-
-    // check the argument types
-    if(body.runtimeType != "".runtimeType && body.runtimeType != _formatValidator.runtimeType){
-      throw FormatException("Format of body is incorrect");
-    }
-
-    // If body is Map<String, dynamic>
-    if(body.runtimeType == _formatValidator.runtimeType){
-      payload = json.encode(body);
-    }else{
-      // validate format if it's string
-      json.decode(body);
-      payload = body;
-    }
-
-    // Send post request
-    var uriResponse = await _client.post('http://'+_ipToConnect+apiUri, headers: _headers, body: payload);
-    // Update header
-    _updateHeaders(uriResponse.headers, apiUri);
-
-    return uriResponse;
+  ///   - Future<bool>: true if the server is available.
+  Future<bool> ping() async{
+    return _client.ping();
   }
 
+  /// Close the http.Client
+  void closeClient(){
+    this._client.closeClient();
+  }
 
-  /// Update headers of request that _client used to send request
+  /// The interface for sending requests
   /// Arguments:
-  ///   - headers: Map<String, dynamic>, headers from response
-  ///   - apiUri: String, the api uri just sent
+  ///   - method: String. The HTTP request methods.
+  ///       - Currently support: GET, POST
+  ///       - Non-supported methods will throw FormatException
+  ///   - apiUri: String. The endpoint of the api
+  ///   - body: dynamic. Request payload
+  ///       - For GET requests, this argument will be ignored
   /// Return:
-  ///   - Void
-  void _updateHeaders(Map<String, dynamic> headers, String apiUri){
-    // get csrfToken if possible
-    if(headers.containsKey('set-cookie')){
-      _headers['cookie'] = "";
-      List<String> cookies = headers['set-cookie'].split(";");
-      for(String cookie in cookies){
-        if(cookie.contains("csrftoken")){
-          _headers['x-csrftoken'] = cookie.split('=')[1];
+  ///   - http.Response: if the request is successfully delivered
+  ///   - null: if the request failed to deliver. In this case, POST payload will be cached.
+  Future<http.Response> request(String method, String apiUri, {dynamic body}) async{
+    method = method.toUpperCase();
+    http.Response response;
 
-        }
-        if(cookie.contains('csrftoken') || cookie.contains("SameSite")){
-          _headers['cookie'] += cookie.split(",")[0] + ";";
-        }
-        if(cookie.contains("sessionid")){
-          cookie = cookie.split(",")[1];
-          _headers['cookie'] += cookie + ";";
-        }
+    // Send request based on given method.
+    // Unsuccessful request will be stored in buffer.
+    try{
+      switch (method){
+        // GET method
+        case "GET": {
+          response = await _client.get(apiUri);
+        }break;
+
+        // POST method
+        case "POST": {
+          response = await _client.post(apiUri, body);
+        }break;
+
+        // Non-support method will throw FormatException.
+        default:{
+          throw FormatException("Non-supported HTTP method: $method.\nOnly support: GET, POST");
+        }break;
+      }
+    }on SocketException{
+      // Store into the buffer
+      _buffer.add(method, apiUri, body);
+
+      // Create fake response if the server is unavailable.
+      response = new http.Response("", 408);
+    }
+
+    // if server is available, send all request in the cache
+    if(!_buffer.empty && response.statusCode == 200){
+      // get cache from the buffer
+      List<dynamic> cache = await _buffer.cache;
+
+      // clear cache
+      _buffer.flush();
+
+      // send request sequentially.
+      for(var req in cache){
+        this.request(req['method'], req['endpoint'], body:req['body']);
       }
     }
 
-    // if user is logged out, discard current csrftoken
-    if(apiUri == _apiLogout && _headers.containsKey('x-csrftoken')){
-      _headers.remove('x-csrftoken');
-    }
+    return response;
   }
 
-  Future<bool> ping() async{
-    try {
-      var response = await this.get('');
-      return response.statusCode == 200;
-    }on SocketException{
-      return false;
-    }
 
-  }
 }
 
 
 NetworkManager networkManager;
 
-Future<void> main() async{
-  String userId;
-  String braceletId;
-  NetworkManager networkManager = new NetworkManager('001074');
-
-  /// Testing login
-  Map<String, dynamic> loginInfo = {'username':"JJack27", "password":"Apple1996"};
-  http.Response response = await networkManager.post('/api/login/', loginInfo);
-  assert(response.statusCode == 200, "Incorrect status code, expecting 200, get ${response.statusCode}");
-  Map<String, dynamic> responseBody = json.decode(response.body);
-  userId = responseBody['id'];
-  print("User Id = $userId");
-
-  /// Testing Add bracelet
-  Map<String, dynamic> bracelet = {"mac_addr": "12:23:23:23:23:33"};
-  http.Response responseBracelet = await networkManager.post('/api/bracelet/$userId/', bracelet);
-  assert(responseBracelet.statusCode == 200, "Incorrect status code, expecting 200, get ${responseBracelet.statusCode}");
-  responseBody = json.decode(responseBracelet.body);
-  braceletId = responseBody['bracelet']['id'];
-  print("Bracelet Id = $braceletId");
-
-  /// Testing adding data
-  List<Map<String, dynamic>> requestPayloads = [];
-  Random randomGenerator = Random();
-  for(int i = 0; i < 10; i++){
-    Map<String,dynamic> payload = {
-      "bracelet": braceletId,
-      'tem': randomGenerator.nextDouble(),
-      'acx': randomGenerator.nextDouble(),
-      'acz': randomGenerator.nextDouble(),
-      'bat': randomGenerator.nextDouble(),
-      'red': randomGenerator.nextDouble(),
-      'ir': randomGenerator.nextDouble()
-    };
-    requestPayloads.add(payload);
-  }
-  // send data
-  for (var payload in requestPayloads){
-    http.Response responseData = await networkManager.post('/api/data/$userId/', payload);
-    assert(responseData.statusCode == 200, "Incorrect status code, expecting 200, get ${responseData.statusCode}");
-  }
-  print("Pass!");
-}
