@@ -22,14 +22,14 @@ class HttpResponse extends http.Response{
 
 class NetworkManager{
   /// attributes
-  HttpClient _client = null;
-  NetworkBuffer _buffer = null;
+  HttpClient _client;
+  NetworkBuffer _buffer;
 
   /// constructor
   NetworkManager(String ipAddr, {bool nursingHome: true, String apiLogout:'/api/logout/'}){
     // initialize httpClient
     _client = new HttpClient(ipAddr, nursingHome: nursingHome, apiLogout:apiLogout);
-
+    _buffer = new NetworkBuffer(capacity: 5);
   }
 
 
@@ -107,10 +107,24 @@ class NetworkManager{
       }
     }on SocketException{
       // Store into the buffer
-
+      _buffer.add(method, apiUri, body);
 
       // Create fake response if the server is unavailable.
       response = new http.Response("", 408);
+    }
+
+    // if server is available, send all request in the cache
+    if(!_buffer.empty && response.statusCode == 200){
+      // get cache from the buffer
+      List<dynamic> cache = await _buffer.cache;
+
+      // clear cache
+      _buffer.flush();
+
+      // send request sequentially.
+      for(var req in cache){
+        this.request(req['method'], req['endpoint'], body:req['body']);
+      }
     }
 
     return response;
