@@ -114,7 +114,7 @@ class NetworkManager{
     }
 
     // if server is available, send all request in the cache
-    if(!_buffer.empty && response.statusCode == 200){
+    if(!_buffer.empty && response.statusCode == 200 && method != 'GET'){
       // get cache from the buffer
       List<dynamic> cache = await _buffer.cache;
 
