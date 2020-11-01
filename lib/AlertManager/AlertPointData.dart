@@ -98,12 +98,13 @@ class AlertPointData{
       }
       break;
     }
+
     // reset time counter if not in warning condition
     if(!warningCondition){
       _counter = 0;
     }else{
       // else, check if it's satisfying duration condition
-      _counter += 1;
+      _counter += 10;
       if(_counter >= _duration){
         return true;
       }
