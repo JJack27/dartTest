@@ -14,6 +14,7 @@ import 'package:flutter_app_file/AlertManager/AlertPointData.dart';
 class AlertManagerPointData{
   List<AlertPointData> _alarms = [];
   AlertConfigurationManager _configManager;
+  DateTime _delayEnd;
 
   // A list of alarm configuration ID that triggered the emergency event
   List<int> _raisedAlarms = [];
@@ -43,8 +44,12 @@ class AlertManagerPointData{
   ///   - rr: double, respiration rate
   ///   - spo2: double, oxygen saturation
   ///   - temp: double, temperature
+  /// return:
+  ///   - True if raised alarms
   bool listen(double hr, double rr, double spo2, double temp){
     bool warn = false;
+
+
 
     // feed data into alarms
     for(var alarm in _alarms){
@@ -70,6 +75,17 @@ class AlertManagerPointData{
 
       warn |= tempWarn;
     }
+
+    // check if suppress warning or not
+    if(_delayEnd != null){
+      if(DateTime.now().isBefore(_delayEnd)){
+        this.clearAlarms();
+        return false;
+      }else{
+        _delayEnd = null;
+      }
+    }
+
     return warn;
   }
 
@@ -85,6 +101,11 @@ class AlertManagerPointData{
   /// getters
   List<int> get raisedAlarms{
     return _raisedAlarms;
+  }
+
+
+  void delayAlarm(){
+    _delayEnd = DateTime.now().add(Duration(hours: 1));
   }
 
 }
