@@ -23,7 +23,7 @@ class HttpClient{
   ///             last two groups of ip address if nursingHome is true
   ///   - nursingHome: bool, optional. Tell NetworkManager if it's connecting to
   ///             nursing home or not
-  HttpClient(String ipAddr, {bool nursingHome: true, String apiLogout:'/api/logout/'}){
+  HttpClient(String ipAddr, {bool nursingHome: true, String apiLogout:'/api/logout/', String port:""}){
     _nursingHome = nursingHome;
     _apiLogout = apiLogout;
 
@@ -38,7 +38,7 @@ class HttpClient{
         FormatException("Your input is invalid");
       }
       this._ipToConnect = '192.168.'+ int.parse(ipAddr.substring(0, 3)).toString() + "." + int.parse(ipAddr.substring(3, 6)).toString();
-      _ipToConnect += ":8000";
+      _ipToConnect += port;
     }else{
       // connect to server in cloud
       this._ipToConnect = ipAddr;

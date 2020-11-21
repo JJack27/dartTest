@@ -7,6 +7,7 @@
 // Importing in-package components
 import 'package:flutter_app_file/NetworkGateway/httpClient.dart';
 import 'package:flutter_app_file/NetworkGateway/networkBuffer.dart';
+import 'package:flutter_app_file/NetworkGateway/websocketClient.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:io';
@@ -24,6 +25,7 @@ class NetworkManager{
   /// attributes
   HttpClient _client;
   NetworkBuffer _buffer;
+  List<WebSocketClient> _webSocketClients;
 
   /// constructor
   NetworkManager(String ipAddr, {bool nursingHome: true, String apiLogout:'/api/logout/'}){
