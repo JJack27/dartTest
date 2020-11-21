@@ -6,7 +6,7 @@
 /// ==============================
 /// @author: Yizhou Zhao
 /// @date: 2020-10-23 13:54
-/// @lastUpdate: 2020-10-23 16:27
+/// @lastUpdate: 2020-11-20 17:12
 
 import 'package:flutter_app_file/AlertManager/AlertConfiguration/alertConfigurationManager.dart';
 import 'package:flutter_app_file/AlertManager/AlertPointData.dart';
@@ -17,7 +17,7 @@ class AlertManagerPointData{
   DateTime _delayEnd;
 
   // A list of alarm configuration ID that triggered the emergency event
-  List<int> _raisedAlarms = [];
+  List<AlertPointData> _raisedAlarms = [];
 
   /// constructor
   AlertManagerPointData(){
@@ -70,7 +70,7 @@ class AlertManagerPointData{
       }
       // if current alarm is raised, record
       if(tempWarn){
-        _raisedAlarms.add(alarm.configId);
+        _raisedAlarms.add(alarm);
       }
 
       warn |= tempWarn;
@@ -99,8 +99,12 @@ class AlertManagerPointData{
   }
 
   /// getters
-  List<int> get raisedAlarms{
-    return _raisedAlarms;
+  /// Return _raisedAlarms. Also clear that
+  List<AlertPointData> get raisedAlarms{
+    List<AlertPointData> res = [];
+    res.addAll(_raisedAlarms);
+    _raisedAlarms = [];
+    return res;
   }
 
 
