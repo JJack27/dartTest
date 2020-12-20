@@ -12,8 +12,6 @@ import 'package:flutter_app_file/NetworkGateway/websocketClient.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'dart:async';
-import 'dart:convert';
-import 'dart:math';
 
 class HttpResponse extends http.Response{
   HttpResponse(String body, int statusCode) : super(body, statusCode);
@@ -132,9 +130,16 @@ class NetworkManager{
     return response;
   }
 
-
 }
 
+Future<void> main() async{
+  NetworkManager manager = new NetworkManager("yizhouzhao.dev");
+  print("Initing");
+  var response = await manager.request("PUT", "/api/allapi/");
+  assert(response.statusCode == 200, "Incorrect status code, expect 200, get ${response.statusCode}");
+
+  print("Pass!");
+}
 
 NetworkManager networkManager;
 

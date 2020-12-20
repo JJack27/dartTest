@@ -23,7 +23,7 @@ class HttpClient{
   ///             last two groups of ip address if nursingHome is true
   ///   - nursingHome: bool, optional. Tell NetworkManager if it's connecting to
   ///             nursing home or not
-  HttpClient(String ipAddr, {bool nursingHome: true, String apiLogout:'/api/logout/', String port:""}){
+  HttpClient(String ipAddr, {bool nursingHome: false, String apiLogout:'/api/logout/', String port:""}){
     _nursingHome = nursingHome;
     _apiLogout = apiLogout;
 
@@ -60,7 +60,7 @@ class HttpClient{
   /// Return:
   ///   - Future<http.Response>
   Future<http.Response> get(String apiUri) async {
-    var uriResponse = await _client.get('http://'+_ipToConnect+apiUri, headers: _headers);
+    var uriResponse = await _client.get('https://'+_ipToConnect+apiUri, headers: _headers);
     return uriResponse;
   }
 
@@ -90,7 +90,7 @@ class HttpClient{
     }
 
     // Send post request
-    var uriResponse = await _client.post('http://'+_ipToConnect+apiUri, headers: _headers, body: payload);
+    var uriResponse = await _client.post('https://'+_ipToConnect+apiUri, headers: _headers, body: payload);
     // Update header
     _updateHeaders(uriResponse.headers, apiUri);
 
@@ -144,8 +144,12 @@ class HttpClient{
 Future<void> main() async{
   String userId;
   String braceletId;
-  HttpClient networkManager = new HttpClient('001074');
+  HttpClient networkManager = new HttpClient('yizhouzhao.dev');
 
+  var response = await networkManager.get('/api/allapi/');
+  assert(response.statusCode == 200, "Incorrect status code, expecting 200, get ${response.statusCode}");
+  print("Pass!");
+  /*
   /// Testing login
   Map<String, dynamic> loginInfo = {'username':"JJack27", "password":"Apple1996"};
   http.Response response = await networkManager.post('/api/login/', loginInfo);
@@ -183,4 +187,5 @@ Future<void> main() async{
     assert(responseData.statusCode == 200, "Incorrect status code, expecting 200, get ${responseData.statusCode}");
   }
   print("Pass!");
+  */
 }
