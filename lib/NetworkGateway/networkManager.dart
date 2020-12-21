@@ -100,6 +100,11 @@ class NetworkManager{
           response = await _client.post(apiUri, body);
         }break;
 
+      // PUT method
+        case "PUT": {
+          response = await _client.put(apiUri, body);
+        }break;
+
         // Non-support method will throw FormatException.
         default:{
           throw FormatException("Non-supported HTTP method: $method.\nOnly support: GET, POST");

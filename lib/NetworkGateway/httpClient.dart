@@ -98,6 +98,39 @@ class HttpClient{
   }
 
 
+  /// Abstract the http.Client.put() method
+  /// Arguments:
+  ///   - apiUri: String. Started and ended with '/'
+  ///   - body: Dynamic. Can be String in JSON format, or Map<String, dynamic>.
+  ///           Note that Map<String, dynamic> will be converted to JSON format.
+  /// Return:
+  ///   - Future<http.Response>
+  Future<http.Response> put(String apiUri, dynamic body) async{
+    String payload;
+
+    // check the argument types
+    if(body.runtimeType != "".runtimeType && body.runtimeType != _formatValidator.runtimeType){
+      throw FormatException("Format of body is incorrect");
+    }
+
+    // If body is Map<String, dynamic>
+    if(body.runtimeType == _formatValidator.runtimeType){
+      payload = json.encode(body);
+    }else{
+      // validate format if it's string
+      json.decode(body);
+      payload = body;
+    }
+
+    // Send post request
+    var uriResponse = await _client.put('https://'+_ipToConnect+apiUri, headers: _headers, body: payload);
+    // Update header
+    _updateHeaders(uriResponse.headers, apiUri);
+
+    return uriResponse;
+  }
+
+
   /// Update headers of request that _client used to send request
   /// Arguments:
   ///   - headers: Map<String, dynamic>, headers from response
